@@ -20,7 +20,7 @@ namespace Roommates.Repositories
                     List<Room> rooms = new List<Room>();
                     while (reader.Read())
                     {
-                        int idColumnPosition = reader.GetOrdinal("Name");
+                        int idColumnPosition = reader.GetOrdinal("Id");
                         int idValue = reader.GetInt32(idColumnPosition);
 
                         int nameColumnPosition = reader.GetOrdinal("Name");

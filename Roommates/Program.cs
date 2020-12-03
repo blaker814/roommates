@@ -12,6 +12,7 @@ namespace Roommates
         static void Main(string[] args)
         {
             RoomRepository roomRepo = new RoomRepository(CONNECTION_STRING);
+            ChoreRepository choreRepo = new ChoreRepository(CONNECTION_STRING);
 
             bool runProgram = true;
             while (runProgram)
@@ -28,6 +29,15 @@ namespace Roommates
                         break;
                     case ("Add a room"):
                         AddRoom(roomRepo);
+                        break;
+                    case ("Show all chores"):
+                        ShowAllChores(choreRepo);
+                        break;
+                    case ("Search for chore"):
+                        SearchForChore(choreRepo);
+                        break;
+                    case ("Add a chore"):
+                        AddChore(choreRepo);
                         break;
                     case ("Exit"):
                         runProgram = false;
@@ -76,6 +86,43 @@ namespace Roommates
             Console.Write("Press any key to continue");
             Console.ReadKey();
         }
+        static void ShowAllChores(ChoreRepository choreRepo)
+        {
+            List<Chore> chores = choreRepo.GetAll();
+            foreach (Chore c in chores)
+            {
+                Console.WriteLine($"{c.Id} - {c.Name}");
+            }
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+        }
+        static void SearchForChore(ChoreRepository choreRepo)
+        {
+            Console.Write("Chore id: ");
+            int id = int.Parse(Console.ReadLine());
+
+            Chore chore = choreRepo.GetById(id);
+
+            Console.WriteLine($"{chore.Id} - {chore.Name}");
+            Console.Write("Press any key to continue");
+            Console.ReadKey();
+        }
+        static void AddChore(ChoreRepository choreRepo)
+        {
+            Console.Write("Chore name: ");
+            string name = Console.ReadLine();
+
+            Chore choreToAdd = new Chore()
+            {
+                Name = name
+            };
+
+            choreRepo.Insert(choreToAdd);
+
+            Console.WriteLine($"{choreToAdd.Name} has been added and assigned an Id of {choreToAdd.Id}");
+            Console.Write("Press any key to continue");
+            Console.ReadKey();
+        }
         static string GetMenuSelection()
         {
             Console.Clear();
@@ -85,6 +132,9 @@ namespace Roommates
             "Show all rooms",
             "Search for room",
             "Add a room",
+            "Show all chores",
+            "Search for chore",
+            "Add a chore",
             "Exit"
         };
 
