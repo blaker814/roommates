@@ -46,6 +46,9 @@ namespace Roommates
                     case ("Show unassigned chores"):
                         ShowUnassignedChores(choreRepo);
                         break;
+                    case ("Assign chore to roommate"):
+                        AssignChoreToRoommate(choreRepo, roommateRepo);
+                        break;
                     case ("Exit"):
                         runProgram = false;
                         break;
@@ -151,6 +154,35 @@ namespace Roommates
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
         }
+        static void AssignChoreToRoommate(ChoreRepository choreRepo, RoommateRepository roommateRepo)
+        {
+            List<Chore> chores = choreRepo.GetAll();
+            List<Roommate> roommates = roommateRepo.GetAll();
+
+            foreach (Chore c in chores)
+            {
+                Console.WriteLine($"{c.Id} - {c.Name}");
+            }
+            Console.Write("Select chore: ");
+            int choreChoice = int.Parse(Console.ReadLine());
+
+            foreach (Roommate r in roommates)
+            {
+                Console.WriteLine($"{r.Id} - {r.FirstName}");
+            }
+            Console.Write("Select roommate: ");
+            int roommateChoice = int.Parse(Console.ReadLine());
+
+            choreRepo.AssignChore(choreChoice, roommateChoice);
+
+            Chore chore = choreRepo.GetById(choreChoice);
+            Roommate roommate = roommateRepo.GetById(roommateChoice);
+
+            Console.WriteLine($"{chore.Name} has been assigned to {roommate.FirstName}");
+            Console.Write("Press any key to continue");
+            Console.ReadKey();
+
+        }
         static string GetMenuSelection()
         {
             Console.Clear();
@@ -165,6 +197,7 @@ namespace Roommates
             "Add a chore",
             "Search for roommate",
             "Show unassigned chores",
+            "Assign chore to roommate",
             "Exit"
         };
 
