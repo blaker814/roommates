@@ -72,5 +72,37 @@ namespace Roommates.Repositories
                 }
             }
         }
+        public Roommate GetRoommateChoreById(int choreId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = $@"SELECT r.Id, FirstName
+                                            FROM Roommate r
+                                            JOIN RoommateChore ON r.Id = RoommateId
+                                            WHERE ChoreId = @id";
+                    cmd.Parameters.AddWithValue("@id", choreId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    Roommate roommate = null;
+
+                    if (reader.Read())
+                    {
+                        int idValue = reader.GetInt32(reader.GetOrdinal("Id"));
+                        string name = reader.GetString(reader.GetOrdinal("Firstname"));
+                        roommate = new Roommate
+                        {
+                            Id = idValue,
+                            FirstName = name
+                        };
+                    }
+                    reader.Close();
+
+                    return roommate;
+                }
+            }
+        }
     }
 }

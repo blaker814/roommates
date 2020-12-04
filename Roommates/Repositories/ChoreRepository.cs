@@ -188,5 +188,54 @@ namespace Roommates.Repositories
                 }
             }
         }
+        public List<Chore> GetAssignedChores()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT Chore.Id, Name
+                                        FROM Chore
+                                        JOIN RoommateChore ON Chore.Id = ChoreId
+                                        ORDER BY Chore.Id";
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    List<Chore> assignedChores = new List<Chore>();
+                    while (reader.Read())
+                    {
+                        int choreId = reader.GetInt32(reader.GetOrdinal("Id"));
+                        string choreName = reader.GetString(reader.GetOrdinal("Name"));
+                        Chore chore = new Chore
+                        {
+                            Id = choreId,
+                            Name = choreName
+                        };
+                        assignedChores.Add(chore);
+                    }
+                    reader.Close();
+
+                    return assignedChores;
+                }
+            }
+        }
+        public void ReassignChore(int choreId, int roommateId, int assignedId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE RoommateChore
+                                        SET RoommateId = @rmId,
+                                            ChoreId = @choreId
+                                        WHERE ChoreId = @choreId AND RoommateId = @assignedId";
+                    cmd.Parameters.AddWithValue("@rmId", roommateId);
+                    cmd.Parameters.AddWithValue("@choreId", choreId);
+                    cmd.Parameters.AddWithValue("@assignedId", assignedId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

@@ -23,6 +23,9 @@ namespace Roommates
 
                 switch (selection)
                 {
+                    case ("Search for roommate"):
+                        SearchForRoommate(roommateRepo);
+                        break;
                     case ("Show all rooms"):
                         ShowAllRooms(roomRepo);
                         break;
@@ -53,14 +56,14 @@ namespace Roommates
                     case ("Delete a chore"):
                         DeleteChore(choreRepo);
                         break;
-                    case ("Search for roommate"):
-                        SearchForRoommate(roommateRepo);
-                        break;
                     case ("Show unassigned chores"):
                         ShowUnassignedChores(choreRepo);
                         break;
                     case ("Assign chore to roommate"):
                         AssignChoreToRoommate(choreRepo, roommateRepo);
+                        break;
+                    case ("Reassign chore"):
+                        ReassignChore(choreRepo, roommateRepo);
                         break;
                     case ("List chore counts"):
                         ListChoreCounts(choreRepo);
@@ -70,6 +73,17 @@ namespace Roommates
                         break;
                 }
             }
+        }
+        static void SearchForRoommate(RoommateRepository roommateRepo)
+        {
+            Console.Write("Roommate id: ");
+            int id = int.Parse(Console.ReadLine());
+
+            Roommate roommate = roommateRepo.GetById(id);
+
+            Console.WriteLine($"{roommate.Id} - {roommate.FirstName} Rent Portion({roommate.RentPortion}) Room Name({roommate.Room.Name})");
+            Console.Write("Press any key to continue");
+            Console.ReadKey();
         }
         static void ShowAllRooms(RoomRepository roomRepo)
         {
@@ -227,17 +241,6 @@ namespace Roommates
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
         }
-        static void SearchForRoommate(RoommateRepository roommateRepo)
-        {
-            Console.Write("Roommate id: ");
-            int id = int.Parse(Console.ReadLine());
-
-            Roommate roommate = roommateRepo.GetById(id);
-
-            Console.WriteLine($"{roommate.Id} - {roommate.FirstName} Rent Portion({roommate.RentPortion}) Room Name({roommate.Room.Name})");
-            Console.Write("Press any key to continue");
-            Console.ReadKey();
-        }
         static void ShowUnassignedChores(ChoreRepository choreRepo)
         {
             List<Chore> unassignedChores = choreRepo.GetUnassignedChores();
@@ -277,6 +280,35 @@ namespace Roommates
             Console.ReadKey();
 
         }
+        private static void ReassignChore(ChoreRepository choreRepo, RoommateRepository roommateRepo)
+        {
+            List<Chore> assignedChores = choreRepo.GetAssignedChores();
+            foreach (Chore chore in assignedChores)
+            {
+                Console.WriteLine($"{chore.Id} - {chore.Name}");
+            }
+            Console.Write("Chore to reassign: ");
+            int choreSelection = int.Parse(Console.ReadLine());
+
+            Roommate roommateChore = roommateRepo.GetRoommateChoreById(choreSelection);
+            Console.WriteLine($"This chore is currently assigned to {roommateChore.FirstName}. Who would you like to assign it to?");
+
+            List<Roommate> roommates = roommateRepo.GetAll();
+            foreach (Roommate roommate in roommates)
+            {
+                Console.WriteLine($"{roommate.Id} - {roommate.FirstName}");
+            }
+            Console.Write("Roommate to be assigned chore: ");
+            int roommateSelection = int.Parse(Console.ReadLine());
+
+            choreRepo.ReassignChore(choreSelection, roommateSelection, roommateChore.Id);
+
+            Roommate roommateAssigned = roommateRepo.GetById(roommateSelection);
+
+            Console.WriteLine($"Chore successfully reassigned to {roommateAssigned.FirstName}");
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+        }
         private static void ListChoreCounts(ChoreRepository choreRepo)
         {
             List<ChoreCount> choreCounts = choreRepo.GetChoreCounts();
@@ -293,6 +325,7 @@ namespace Roommates
 
             List<string> options = new List<string>()
         {
+            "Search for roommate",
             "Show all rooms",
             "Search for room",
             "Add a room",
@@ -302,9 +335,9 @@ namespace Roommates
             "Add a chore",
             "Update a chore",
             "Delete a chore",
-            "Search for roommate",
             "Show unassigned chores",
             "Assign chore to roommate",
+            "Reassign chore",
             "List chore counts",
             "Exit"
         };
