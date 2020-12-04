@@ -31,6 +31,9 @@ namespace Roommates
                     case ("Add a room"):
                         AddRoom(roomRepo);
                         break;
+                    case ("Delete a room"):
+                        DeleteRoom(roomRepo);
+                        break;
                     case ("Show all chores"):
                         ShowAllChores(choreRepo);
                         break;
@@ -55,6 +58,23 @@ namespace Roommates
                 }
             }
         }
+
+        private static void DeleteRoom(RoomRepository roomRepo)
+        {
+            List<Room> rooms = roomRepo.GetAll();
+            foreach (Room r in rooms)
+            {
+                Console.WriteLine($"{r.Id} - {r.Name} Max Occupancy({r.MaxOccupancy})");
+            }
+
+            Console.Write("Room Id: ");
+            int id = int.Parse(Console.ReadLine());
+            roomRepo.Delete(id);
+            Console.WriteLine($"Room with id {id} has been deleted");
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+        }
+
         static void ShowAllRooms(RoomRepository roomRepo)
         {
             List<Room> rooms = roomRepo.GetAll();
@@ -192,6 +212,7 @@ namespace Roommates
             "Show all rooms",
             "Search for room",
             "Add a room",
+            "Delete a room",
             "Show all chores",
             "Search for chore",
             "Add a chore",

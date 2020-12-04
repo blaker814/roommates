@@ -124,7 +124,7 @@ namespace Roommates.Repositories
                                                 VALUES (@choreId, @roommateId)";
                     cmd.Parameters.AddWithValue("@choreId", choreId);
                     cmd.Parameters.AddWithValue("@roommateId", roommateId);
-                    int id = (int)cmd.ExecuteScalar();
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
