@@ -30,9 +30,9 @@ namespace Roommates.Repositories
                             Id = id,
                             FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
                             RentPortion = reader.GetInt32(reader.GetOrdinal("RentPortion")),
-                            Room = new Room 
-                            { 
-                                Name = reader.GetString(reader.GetOrdinal("RoomName")) 
+                            Room = new Room
+                            {
+                                Name = reader.GetString(reader.GetOrdinal("RoomName"))
                             }
                         };
                     }

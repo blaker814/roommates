@@ -120,10 +120,39 @@ namespace Roommates.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"INSERT INTO RoommateChore (ChoreId, RoommateId)
-                                                OUTPUT INSERTED.Id
                                                 VALUES (@choreId, @roommateId)";
                     cmd.Parameters.AddWithValue("@choreId", choreId);
                     cmd.Parameters.AddWithValue("@roommateId", roommateId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public void Update(Chore chore)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Chore
+                                        SET Name = @name,
+                                        WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@name", chore.Name);
+                    cmd.Parameters.AddWithValue("@id", chore.Id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public void Delete(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM RoommateChore WHERE ChoreId = @id;
+                                        DELETE FROM Chore WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }
