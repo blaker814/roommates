@@ -62,6 +62,9 @@ namespace Roommates
                     case ("Assign chore to roommate"):
                         AssignChoreToRoommate(choreRepo, roommateRepo);
                         break;
+                    case ("List chore counts"):
+                        ListChoreCounts(choreRepo);
+                        break;
                     case ("Exit"):
                         runProgram = false;
                         break;
@@ -274,6 +277,16 @@ namespace Roommates
             Console.ReadKey();
 
         }
+        private static void ListChoreCounts(ChoreRepository choreRepo)
+        {
+            List<ChoreCount> choreCounts = choreRepo.GetChoreCounts();
+            foreach (ChoreCount choreCount in choreCounts)
+            {
+                Console.WriteLine($"{choreCount.RoommateName}: {choreCount.Count}");
+            }
+            Console.WriteLine("Press any key to continue");
+            Console.ReadKey();
+        }
         static string GetMenuSelection()
         {
             Console.Clear();
@@ -292,6 +305,7 @@ namespace Roommates
             "Search for roommate",
             "Show unassigned chores",
             "Assign chore to roommate",
+            "List chore counts",
             "Exit"
         };
 
